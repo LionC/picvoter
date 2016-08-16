@@ -1,0 +1,25 @@
+{
+  "name": "picvoter",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LionC/picvoter.git"
+  },
+  "author": "LionC <me@lionc.de>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LionC/picvoter/issues"
+  },
+  "homepage": "https://github.com/LionC/picvoter#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongodb": "^2.2.6"
+  }
+}
