@@ -1,41 +1,117 @@
 var mongo = require('mongodb');
 var express = require('express');
 var bodyParser = require('body-parser');
-var uuid = require('uuid').v2;
+var uuid = require('uuid').v4;
 
 var fs = require('fs');
 var assert = require('assert');
 var path = require('path');
 
-var app = express();
+var db = require('./db');
 
-app.use(bodyParser.json());
+var collection = null;
 
-app.use(express.static('public'));
+db.connect(function(err) {
+    assert.equal(err, null);
+
+    collection = db.collection('pics');
+
+    reindexFiles();
+
+    var app = express();
+
+    app.use(bodyParser.json());
+
+    app.use(express.static('public'));
+
+    app.param('picId', picMiddleware);
+
+    app.post('/:picId/votes', function(req, res) {
+        req.pic.rating += req.body.value;
+        req.pic.votes++;
+
+        save(req.pic, function(err) {
+            assert.equal(err, null);
+
+            res.status(201).send();
+        });
+    });
+
+    app.get('/newpic', function(req, res) {
+        getLowestVotedPic(function(err, pic) {
+            assert.equal(err, null);
+
+            res.status(200).json(pic);
+        });
+    })
+
+    app.listen(8080, function(err) {
+        assert.equal(err, null);
+
+        console.log('Listening on 8080');
+    });
+})
 
 function reindexFiles() {
-    var ids = getAllIds();
+    getAllKnownFiles(function(err, knownFiles) {
+        assert.equal(err, null);
 
-    fs.readdir('public/pics', onDirRead);
+        fs.readdir('public/pics', onDirRead);
 
-    function onDirRead(err, files) {
-        assertEquals(err, null);
+        function onDirRead(err, files) {
+            assert.equal(err, null);
 
-        files.forEach(function(file) {
-            var id = path.basename(file, '.jpg');
+            files.forEach(function(file) {
+                var filename = path.basename(file);
 
-            if(ids.indexOf(id) == -1) {
-                createNewPic(id);
-            }
-        });
-    }
+                if(knownFiles.indexOf(filename) == -1) {
+                    createNewPic(filename, function(err) {
+                        assert.equal(err, null);
+
+                        console.log('Found new pic: ' + filename);
+                    });
+                }
+            });
+        }
+    });
 }
 
-function getAllIds() {
+function getAllKnownFiles(cb) {
+    collection.find().toArray(function(err, pics) {
+        assert.equal(err, null);
 
+        cb(null, pics.map(function(pic) {
+            return pic.filename;
+        }));
+    });
 }
 
 
-function createNewPic(id) {
+function createNewPic(filename, cb) {
+    var newPic = {
+        _id: uuid(),
+        filename: filename,
+        rating: 0,
+        votes: 0
+    };
 
+    collection.insertOne(newPic, cb || function(){});
+}
+
+function save(pic, cb) {
+    collection.save(pic, cb);
+}
+
+function getLowestVotedPic(cb) {
+    collection.find().sort('votes', 1).limit(1).nextObject(cb);
+}
+
+function picMiddleware(req, res, next, picId) {
+    collection.findOne({_id: picId}, function(err, pic) {
+        assert.equal(err, null);
+
+        req.pic = pic;
+
+        next();
+    });
 }
