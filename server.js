@@ -43,6 +43,7 @@ db.connect(function(err) {
         getLowestVotedPic(function(err, pic) {
             if(err == "NOT FOUND") {
                 res.status(404).send();
+                return;
             }
 
             res.status(200).json(pic);
