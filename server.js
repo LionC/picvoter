@@ -118,9 +118,13 @@ function getLowestVotedPic(cb) {
             return;
         }
         array.forEach(function(elem) {
+            var i = 0;
             if(elem.votes != 0) {
                 console.log(elem.votes + ": " + elem.rating)
+            } else {
+                i++;
             }
+            console.log("0 votes: " + i);
         })
         cb(err, array[parseInt(Math.random() * array.length)])
     });
