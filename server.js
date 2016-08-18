@@ -41,7 +41,9 @@ db.connect(function(err) {
 
     app.get('/newpic', function(req, res) {
         getLowestVotedPic(function(err, pic) {
-            assert.equal(err, null);
+            if(err == "NOT FOUND") {
+                res.status(404).send();
+            }
 
             res.status(200).json(pic);
         });
@@ -80,6 +82,7 @@ function reindexFiles() {
 
 function getAllKnownFiles(cb) {
     collection.find().toArray(function(err, pics) {
+
         assert.equal(err, null);
 
         cb(null, pics.map(function(pic) {
