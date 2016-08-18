@@ -1,6 +1,6 @@
 'use strict';
 
-var SERVER_URL = ""
+var SERVER_URL = "localhost:8080"
 var NEW_PICTURE = 10 * 1000;
 
 

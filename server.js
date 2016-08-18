@@ -18,6 +18,8 @@ db.connect(function(err) {
 
     reindexFiles();
 
+    setInterval(reindexFiles, 5 * 60 * 1000);
+
     var app = express();
 
     app.use(bodyParser.json());
