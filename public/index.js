@@ -1,7 +1,7 @@
 'use strict';
 
 var SERVER_URL = "http://localhost:8080"
-var NEW_PICTURE = 10 * 1000;
+var NEW_PICTURE = 5 * 60 * 1000;
 
 
 (function(){
@@ -47,8 +47,8 @@ var NEW_PICTURE = 10 * 1000;
             }
 
             function loadNewPicture() {
-                $http.get(SERVER_URL + "/newpic").then(function(data) {
-                    pic = data.response;
+                $http.get(SERVER_URL + "/newpic").then(function(response) {
+                    pic = response.data;
                 }).catch(function(err) {
                     console.log("error")
                     console.dir(err)
@@ -57,7 +57,7 @@ var NEW_PICTURE = 10 * 1000;
             }
 
             function upVote() {
-                $http.post(SERVER_URL + "/" + pic.id + "/votes" , {"type": "UP"}).then(function() {
+                $http.post(SERVER_URL + "/" + pic._id + "/votes" , {"type": "UP"}).then(function() {
                     loadNewPicture();
                 })
             }
@@ -65,7 +65,7 @@ var NEW_PICTURE = 10 * 1000;
 
             function downVote() {
 
-                    $http.post(SERVER_URL + "/" + pic.id + "/votes", {"type": "DOWN"}).then(function() {
+                    $http.post(SERVER_URL + "/" + pic._id + "/votes", {"type": "DOWN"}).then(function() {
                     loadNewPicture();
                 })
             }

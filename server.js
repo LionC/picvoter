@@ -105,7 +105,9 @@ function save(pic, cb) {
 }
 
 function getLowestVotedPic(cb) {
-    collection.find().sort('votes', 1).limit(1).nextObject(cb);
+    collection.find().sort('votes', 1).limit(100).toArray(function(err, array) {
+        cb(err, array[parseInt(Math.random() * array.length)])
+    });
 }
 
 function picMiddleware(req, res, next, picId) {
