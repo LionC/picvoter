@@ -106,6 +106,9 @@ function save(pic, cb) {
 
 function getLowestVotedPic(cb) {
     collection.find().sort('votes', 1).limit(100).toArray(function(err, array) {
+        if(array == undefined) {
+            cb("NOT FOUND");
+        }
         cb(err, array[parseInt(Math.random() * array.length)])
     });
 }
