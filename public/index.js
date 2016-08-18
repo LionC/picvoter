@@ -43,12 +43,15 @@ var NEW_PICTURE = 10 * 1000;
             }
 
             function getPicUrl() {
-                return SERVER_URL + "/pics/" + pic.fileName;
+                return SERVER_URL + "/pics/" + pic.filename;
             }
 
             function loadNewPicture() {
                 $http.get(SERVER_URL + "/newpic").then(function(data) {
                     pic = data.response;
+                }).catch(function(err) {
+                    console.log("error")
+                    console.dir(err)
                 })
                 resetTimeout()
             }
