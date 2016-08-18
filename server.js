@@ -29,7 +29,15 @@ db.connect(function(err) {
     app.param('picId', picMiddleware);
 
     app.post('/:picId/votes', function(req, res) {
-        req.pic.rating += req.body.value;
+        if(isNaN(req.pic.rating)) {
+            req.pic.votes = 0;
+            req.pic.rating = 0;
+        }
+        if(req.body.type == "UP") {
+            req.pic.rating++;
+        } else {
+            req.pic.rating--;
+        }
         req.pic.votes++;
 
         save(req.pic, function(err) {
