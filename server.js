@@ -109,7 +109,7 @@ function save(pic, cb) {
 }
 
 function getLowestVotedPic(cb) {
-    collection.find().sort({'votes': -1}).limit(100).toArray(function(err, array) {
+    collection.find().sort({'votes': 1}).limit(100).toArray(function(err, array) {
         if(err != null){
             console.log(err);
         }
@@ -117,6 +117,9 @@ function getLowestVotedPic(cb) {
             cb("NOT FOUND");
             return;
         }
+        array.forEach(function(elem) {
+            console.log(elem.votes + ": " + elem.rating)
+        })
         cb(err, array[parseInt(Math.random() * array.length)])
     });
 }
