@@ -1,7 +1,7 @@
 'use strict';
 
 var SERVER_URL = "http://localhost:8080"
-var NEW_PICTURE = 5 * 60 * 1000;
+var NEW_PICTURE = 30 * 1000;
 
 
 (function(){
