@@ -39,7 +39,7 @@ var NEW_PICTURE = 30 * 1000;
 
             function resetTimeout() {
                 $timeout.cancel(timeout);
-                var timeout = $timeout(loadNewPicture,NEW_PICTURE);
+                timeout = $timeout(loadNewPicture,NEW_PICTURE);
             }
 
             function getPicUrl() {
