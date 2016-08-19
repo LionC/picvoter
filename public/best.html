@@ -36,9 +36,8 @@
 
     <script src="./angular.js"></script>
     <script src="./index.js"></script>
-    {{ctrl.pics}}
     <div class="pic" ng-repeat="pic in ctrl.pics">
-        <img ng-src="{{ctrl.getUrl(pic)}}">
+        <img ng-src="/pics{{pic.filename}}">
         <span>{{pic.rating}}</span>
     </div>
 </body>
