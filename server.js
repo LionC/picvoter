@@ -117,7 +117,7 @@ function save(pic, cb) {
 }
 
 function getLowestVotedPic(cb) {
-    collection.find().sort({'votes': 1}).limit(100).toArray(function(err, array) {
+    collection.find({'rating' : { $gt: -3}}).sort({'votes': 1}).limit(100).toArray(function(err, array) {
         if(err != null){
             console.log(err);
         }
@@ -125,16 +125,9 @@ function getLowestVotedPic(cb) {
             cb("NOT FOUND");
             return;
         }
-            var i = 0;
-        array.forEach(function(elem) {
-            if(elem.votes != 0) {
-                console.log(elem.votes + ": " + elem.rating)
-            } else {
-                i++;
-            }
-        })
-        console.log("0 votes: " + i);
-        cb(err, array[parseInt(Math.random() * array.length)])
+        var elem = array[parseInt(Math.random() * array.length)];
+        console.log("serving with rate " + elem.rating + " and votes " + elem.votes);
+        cb(err, )
     });
 }
 
