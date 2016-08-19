@@ -16,11 +16,12 @@
     }
     </style>
 </head>
-<body ng-controller="BestController as ctrl" ng-keydown=ctrl.keyDown($event)>
+<body ng-controller="BestController as ctrl" clas="container-fluid" ng-keydown=ctrl.keyDown($event)>
 
     <script src="./angular.js"></script>
     <script src="./index.js"></script>
-    <div class="container">
+    <script src="./bootstrap.min.cs"></script>
+    <div class="col-md-12">
         <div class="pic" ng-repeat="pic in ctrl.pics">
             <img ng-src="/pics/{{pic.filename}}">
             <span>{{pic.rating}}</span>
