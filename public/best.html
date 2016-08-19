@@ -14,6 +14,15 @@
     .pic {
         height: 220px;
     }
+    .pic div {
+        position: relative;
+        bottom: 10px;
+        right: 10px;
+        background-color: white;
+    }
+    .img {
+        object-fit: scale-down;
+    }
     </style>
     <link rel="stylesheet" type="text/css" href="./bootstrap.min.css">
 </head>
@@ -24,7 +33,7 @@
     <div class="col-md-12">
         <div class="pic" ng-repeat="pic in ctrl.pics">
             <img ng-src="/pics/{{pic.filename}}">
-            <span>{{pic.rating}}</span>
+            <div>{{pic.rating}}</span>
         </div>
     </div>
 </body>
