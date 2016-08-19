@@ -33,6 +33,9 @@
     </style>
 </head>
 <body ng-controller="BestController as ctrl" ng-keydown=ctrl.keyDown($event)>
+
+    <script src="./angular.js"></script>
+    <script src="./index.js"></script>
     <div ng-repeat="pic in ctrl.pics">
         <img ng-src="ctrl.getUrl(pic)">
         <span>{{pic.rating}}</span>
