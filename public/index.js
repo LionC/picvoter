@@ -72,4 +72,23 @@ var NEW_PICTURE = 30 * 1000;
 
 
         }]);
+
+    app.controller("BestController", [
+        '$http',
+        function($http) {
+            var self = this;
+
+            var pics = [];
+
+            function getBestPics() {
+                $http.get(SERVER_URL + "/hotpics").then(function(response) {
+                    pics = response.data;
+                })
+            }
+
+            function getUrl(pics) {
+                return SERVER_URL + "/pics/" + pic.filename;
+            }
+        }
+    ])
 })();

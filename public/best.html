@@ -1,0 +1,41 @@
+<html ng-app="picvoter">
+<head>
+    <title>Picvoter</title>
+    <style>
+    img {
+        width: 200px;
+        height: 200px;
+
+    }
+
+    .pic {
+        object-fit: scale-down;
+    }
+    body {
+        margin: 0px;
+    }
+
+    .btn {
+        position: fixed;
+        bottom: 20px;
+        height: 150px;
+        width: 150px;
+        border: 0px;
+        background-color: transparent;
+        text-align: justify;
+    }
+    .btn-up {
+        right: 20px;
+    }
+    .btn-down {
+        left: 20px;
+    }
+    </style>
+</head>
+<body ng-controller="BestController as ctrl" ng-keydown=ctrl.keyDown($event)>
+    <div ng-repeat="pic in ctrl.pics">
+        <img ng-src="ctrl.getUrl(pic)">
+        <span>{{pic.rating}}</span>
+    </div>
+</body>
+</html>
