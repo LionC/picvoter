@@ -88,7 +88,7 @@ var NEW_PICTURE = 30 * 1000;
 
             function getBestPics() {
                 $http.get(SERVER_URL + "/hotpics").then(function(response) {
-                    pics = response.data;
+                    self.pics = response.data;
                 })
             }
 
