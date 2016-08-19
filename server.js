@@ -127,7 +127,7 @@ function getLowestVotedPic(cb) {
         }
         var elem = array[parseInt(Math.random() * array.length)];
         console.log("serving with rate " + elem.rating + " and votes " + elem.votes);
-        cb(err, )
+        cb(err, elem)
     });
 }
 
