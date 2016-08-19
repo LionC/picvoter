@@ -122,7 +122,7 @@ function save(pic, cb) {
     collection.save(pic, cb);
 }
 
-function getBestPictures() {
+function getBestPictures(cb) {
     collection.find().sort({'rating': -1}).limit(100).toArray(function(err, array) {
         cb(err, array);
     })
