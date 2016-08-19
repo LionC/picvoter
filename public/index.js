@@ -75,8 +75,8 @@ var NEW_PICTURE = 30 * 1000;
 
     app.controller("BestController", [
         '$http',
-        '$timeout',
-        function($http, $$interval) {
+        '$interval',
+        function($http, $interval) {
             var self = this;
 
             var pics = [];
