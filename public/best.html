@@ -7,28 +7,12 @@
         height: 200px;
 
     }
-
+    .container {
+        width: 100%;
+        display: flex;
+    }
     .pic {
-        object-fit: scale-down;
-    }
-    body {
-        margin: 0px;
-    }
-
-    .btn {
-        position: fixed;
-        bottom: 20px;
-        height: 150px;
-        width: 150px;
-        border: 0px;
-        background-color: transparent;
-        text-align: justify;
-    }
-    .btn-up {
-        right: 20px;
-    }
-    .btn-down {
-        left: 20px;
+        height: 220px;
     }
     </style>
 </head>
@@ -36,9 +20,11 @@
 
     <script src="./angular.js"></script>
     <script src="./index.js"></script>
-    <div class="pic" ng-repeat="pic in ctrl.pics">
-        <img ng-src="/pics/{{pic.filename}}">
-        <span>{{pic.rating}}</span>
+    <div class="container">
+        <div class="pic" ng-repeat="pic in ctrl.pics">
+            <img ng-src="/pics/{{pic.filename}}">
+            <span>{{pic.rating}}</span>
+        </div>
     </div>
 </body>
 </html>
