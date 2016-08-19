@@ -79,7 +79,7 @@ var NEW_PICTURE = 30 * 1000;
         function($http, $interval) {
             var self = this;
 
-            var pics = [];
+            self.pics = [];
 
             self.getUrl = getUrl;
 
