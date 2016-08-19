@@ -75,10 +75,14 @@ var NEW_PICTURE = 30 * 1000;
 
     app.controller("BestController", [
         '$http',
-        function($http) {
+        '$timeout'
+        function($http, $$interval) {
             var self = this;
 
             var pics = [];
+
+            $interval(getBestPics, 5 * 60 * 1000);
+
 
             function getBestPics() {
                 $http.get(SERVER_URL + "/hotpics").then(function(response) {
