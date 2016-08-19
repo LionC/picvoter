@@ -28,6 +28,12 @@ db.connect(function(err) {
 
     app.param('picId', picMiddleware);
 
+    app.get('/hotpics', function(req, res) {
+        getBestPictures(function(err, pics) {
+            res.status(200).json(pics);
+        })
+    })
+
     app.post('/:picId/votes', function(req, res) {
         if(isNaN(req.pic.rating)) {
             req.pic.votes = 0;
@@ -114,6 +120,12 @@ function createNewPic(filename, cb) {
 
 function save(pic, cb) {
     collection.save(pic, cb);
+}
+
+function getBestPictures() {
+    collection.find().sort({'rating': -1}).limit(100).toArray(function(err, array) {
+        cb(err, array);
+    })
 }
 
 function getLowestVotedPic(cb) {
