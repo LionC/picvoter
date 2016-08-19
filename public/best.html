@@ -16,7 +16,7 @@
         width: 220px;
         display: inline;
     }
-    .pic div {
+    .pic span {
         position: relative;
         bottom: 10px;
         right: 10px;
@@ -35,7 +35,7 @@
     <div class="col-md-12">
         <div class="pic" ng-repeat="pic in ctrl.pics">
             <img ng-src="/pics/{{pic.filename}}">
-            <div>{{pic.rating}}</span>
+            <span>{{pic.rating}}</span>
         </div>
     </div>
 </body>
