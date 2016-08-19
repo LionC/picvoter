@@ -82,8 +82,8 @@ var NEW_PICTURE = 30 * 1000;
             var pics = [];
 
             $interval(getBestPics, 5 * 60 * 1000);
-
-
+            getBestPics();
+            
             function getBestPics() {
                 $http.get(SERVER_URL + "/hotpics").then(function(response) {
                     pics = response.data;
