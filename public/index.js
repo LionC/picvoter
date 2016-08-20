@@ -141,28 +141,29 @@ var NEW_PICTURE = 30 * 1000;
                 return SERVER_URL + "/pics/" + pic.filename;
             }
         }
-        app.controller("BestController", [
-            '$http',
-            '$interval',
-            function($http, $interval) {
-                var self = this;
+    ])
+    app.controller("BestController", [
+        '$http',
+        '$interval',
+        function($http, $interval) {
+            var self = this;
 
-                self.pics = [];
+            self.pics = [];
 
-                self.getUrl = getUrl;
+            self.getUrl = getUrl;
 
-                $interval(getBestPics, 5 * 60 * 1000);
-                getBestPics();
+            $interval(getBestPics, 5 * 60 * 1000);
+            getBestPics();
 
-                function getBestPics() {
-                    $http.get(SERVER_URL + "/pics").then(function(response) {
-                        self.pics = response.data;
-                    })
-                }
-
-                function getUrl(pics) {
-                    return SERVER_URL + "/pics/" + pic.filename;
-                }
+            function getBestPics() {
+                $http.get(SERVER_URL + "/pics").then(function(response) {
+                    self.pics = response.data;
+                })
             }
+
+            function getUrl(pics) {
+                return SERVER_URL + "/pics/" + pic.filename;
+            }
+        }
     ])
 })();
