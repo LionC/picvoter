@@ -22,6 +22,8 @@ var NEW_PICTURE = 30 * 1000;
 
             self.voting = false;
 
+            var loading = false;
+
             var timeout;
 
             init();
@@ -57,7 +59,6 @@ var NEW_PICTURE = 30 * 1000;
                 loadNewPicture();
             }
 
-            var loading = false;
             function loadNewPicture() {
                 if(loading) {
                     return;
@@ -77,6 +78,7 @@ var NEW_PICTURE = 30 * 1000;
                         console.dir(err)
                     })
                 }
+                loadPic();
                 resetTimeout();
             }
 
