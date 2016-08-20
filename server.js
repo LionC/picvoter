@@ -155,6 +155,7 @@ function getAverageRating(cb) {
     collection.find().toArray(function(err, array) {
         cb(array.map(function(pic) {
             if(isNaN(pic.rating)) {
+                console.log("NaN")
                 return 0;
             }
             return pic.rating;
