@@ -17,8 +17,6 @@ var NEW_PICTURE = 30 * 1000;
             self.upVote = upVote;
             self.downVote = downVote;
             self.keyDown = keyDown;
-            self.getNextPicUrl = getNextPicUrl;
-            self.getPicUrlForPic = getPicUrlForPic;
 
             var picBuffer = [];
 
@@ -49,12 +47,8 @@ var NEW_PICTURE = 30 * 1000;
                 timeout = $timeout(loadNewPicture, NEW_PICTURE);
             }
 
-            function getPicUrl() {
-                return SERVER_URL + "/pics/" + picBuffer[0].filename;
-            }
-
-            function getPicUrlForPic(pic) {
-                    return SERVER_URL + "/pics/" + pic.filename;
+            function getPicUrl(pic) {
+                return SERVER_URL + "/pics/" + pic.filename;
             }
 
 
