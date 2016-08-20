@@ -18,6 +18,7 @@ var NEW_PICTURE = 30 * 1000;
             self.downVote = downVote;
             self.keyDown = keyDown;
             self.getNextPicUrl = getNextPicUrl;
+            self.getPicUrlForPic = getPicUrlForPic;
 
             var picBuffer = [];
 
@@ -91,7 +92,7 @@ var NEW_PICTURE = 30 * 1000;
                 }
 
                 self.voting = true;
-                $http.post(SERVER_URL + "/" + pic._id + "/votes" , {"type": "UP"}).then(function() {
+                $http.post(SERVER_URL + "/" + picBuffer[0]._id + "/votes" , {"type": "UP"}).then(function() {
                     self.voting = false;
                 })
                 changePicture()
@@ -104,7 +105,7 @@ var NEW_PICTURE = 30 * 1000;
                 }
 
                 self.voting = true;
-                $http.post(SERVER_URL + "/" + pic._id + "/votes", {"type": "DOWN"}).then(function() {
+                $http.post(SERVER_URL + "/" + picBuffer[0]._id + "/votes", {"type": "DOWN"}).then(function() {
                         self.voting = false;
                 })
                 changePicture()
