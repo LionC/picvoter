@@ -118,7 +118,7 @@ function reindexFiles() {
 }
 
 function getAll(cb) {
-    collections.find().toArray(function(err, pics) {
+    collection.find().toArray(function(err, pics) {
         cb(pics);
     })
 }
