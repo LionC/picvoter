@@ -154,7 +154,7 @@ function getHighestRating(cb) {
 function getAverageRating(cb) {
     collection.find().toArray(function(err, array) {
         cb(array.map(function(pic) {
-            if(isNan(pic.rating)) {
+            if(isNaN(pic.rating)) {
                 return 0;
             }
             return pic.rating;
