@@ -142,7 +142,7 @@ var NEW_PICTURE = 30 * 1000;
             }
         }
     ])
-    app.controller("BestController", [
+    app.controller("AllController", [
         '$http',
         '$interval',
         function($http, $interval) {
