@@ -67,10 +67,10 @@ var NEW_PICTURE = 30 * 1000;
                     console.log("loading new picture " + self.picBuffer.length + "/5")
                     loading = true;
                     $http.get(SERVER_URL + "/newpic").then(function(response) {
+                        console.dir(response)
                         self.picBuffer.push(response.data);
                         if(self.picBuffer.length <= 5) {
                             loadPic();
-
                         } else {
                             console.log("done buffering")
                             loading = false;
