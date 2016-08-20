@@ -66,7 +66,7 @@ var NEW_PICTURE = 30 * 1000;
                 var loadPic = function() {
                     console.log("loading new picture " + self.picBuffer.length + "/5")
                     loading = true;
-                    $http.get(SERVER_URL + "/newpic?cacheBuster=" + (new Date().valueOf()g)).then(function(response) {
+                    $http.get(SERVER_URL + "/newpic?cacheBuster=" + (new Date().valueOf())).then(function(response) {
                         if(!self.picBuffer.map(function(pic) {
                                 return response.data._id == pic._id
                             }).collect(function(a,b) {
