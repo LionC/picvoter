@@ -64,13 +64,17 @@ var NEW_PICTURE = 30 * 1000;
                     return;
                 }
                 var loadPic = function() {
+                    console.log("loading new picture " + self.picBuffer.length + "/5")
                     loading = true;
                     $http.get(SERVER_URL + "/newpic").then(function(response) {
                         self.picBuffer.push(response.data);
                         if(self.picBuffer.length <= 5) {
                             loadPic();
+
                         } else {
+                            console.log("done buffering")
                             loading = false;
+                            resetTimeout();
                         }
                     }).catch(function(err) {
                         loading = false;
@@ -79,7 +83,6 @@ var NEW_PICTURE = 30 * 1000;
                     })
                 }
                 loadPic();
-                resetTimeout();
             }
 
             function upVote() {
