@@ -39,7 +39,7 @@
 <body ng-controller="PicController as ctrl" ng-keydown=ctrl.keyDown($event)>
     <script src="./angular.js"></script>
     <script src="./index.js"></script>
-    <img class="pic" ng-src="{{ctrl.getPicUrl(picBuffer[0])}}"></img>
+    <img ng-if="picBuffer.length > 0" class="pic" ng-src="{{ctrl.getPicUrl(picBuffer[0])}}"></img>
     <img ng-repeat="pic in ctrl.picBuffer" class="next-pic" ng-src="{{ctrl.getPicUrl(pic)}}"></img>
     <button ng-if-start="!ctrl.voting" class="btn btn-up" ng-click="ctrl.upVote()"><img src="./thumps-up.png"></img></button>
     <button ng-if-end class="btn btn-down" ng-click="ctrl.downVote()"><img src="./thumps-down.png"></img></button>
