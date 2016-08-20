@@ -19,15 +19,16 @@ var NEW_PICTURE = 30 * 1000;
             self.keyDown = keyDown;
             self.getNextPicUrl = getNextPicUrl;
 
-            var pic;
-            var nextPic;
+            var picBuffer = [];
 
             self.voting = false;
 
             var timeout;
 
-            loadNewPicture();
-            $timeout(loadNewPicture, 100);
+            init();
+            function init() {
+                loadNewPicture();
+            }
 
             var upKeys = "uiopü+jklöä#nm,.-"
             var downKeys = 'qwertasdfgyxcv'
@@ -48,23 +49,40 @@ var NEW_PICTURE = 30 * 1000;
             }
 
             function getPicUrl() {
-                return SERVER_URL + "/pics/" + pic.filename;
+                return SERVER_URL + "/pics/" + picBuffer[0].filename;
             }
 
-            function getNextPicUrl() {
-
-                    return SERVER_URL + "/pics/" + nextPic.filename;
+            function getPicUrlForPic(pic) {
+                    return SERVER_URL + "/pics/" + pic.filename;
             }
+
+
+            function changePicture() {
+                picBuffer.splice(0,1);
+                loadNewPicture();
+            }
+
+            var loading = false;
             function loadNewPicture() {
-                pic = nextPic;
-                nextPic = undefined;
-                $http.get(SERVER_URL + "/newpic").then(function(response) {
-                    nextPic = response.data;
-                }).catch(function(err) {
-                    console.log("error")
-                    console.dir(err)
-                })
-                resetTimeout()
+                if(loading) {
+                    return;
+                }
+                var loadPic = function() {
+                    loading = true;
+                    $http.get(SERVER_URL + "/newpic").then(function(response) {
+                        picBuffer.push(nextPic);
+                        if(picBuffer.length <= 5) {
+                            loadPic();
+                        } else {
+                            loading = false;
+                        }
+                    }).catch(function(err) {
+                        loading = false;
+                        console.log("error")
+                        console.dir(err)
+                    })
+                }
+                resetTimeout();
             }
 
             function upVote() {
@@ -76,7 +94,7 @@ var NEW_PICTURE = 30 * 1000;
                 $http.post(SERVER_URL + "/" + pic._id + "/votes" , {"type": "UP"}).then(function() {
                     self.voting = false;
                 })
-                loadNewPicture();
+                changePicture()
             }
 
 
@@ -85,11 +103,11 @@ var NEW_PICTURE = 30 * 1000;
                     return;
                 }
 
-                voting = true;
+                self.voting = true;
                 $http.post(SERVER_URL + "/" + pic._id + "/votes", {"type": "DOWN"}).then(function() {
                         self.voting = false;
                 })
-                loadNewPicture();
+                changePicture()
             }
 
 
