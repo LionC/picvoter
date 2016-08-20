@@ -34,7 +34,7 @@ db.connect(function(err) {
         })
     })
 
-    app.get('/get', function(req, res) {
+    app.get('/all', function(req, res) {
         getAll(function(pics) {
             res.status(200).json(pics);
         })
