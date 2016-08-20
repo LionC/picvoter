@@ -66,7 +66,7 @@ var NEW_PICTURE = 30 * 1000;
                 var loadPic = function() {
                     console.log("loading new picture " + self.picBuffer.length + "/5")
                     loading = true;
-                    $http.get(SERVER_URL + "/newpic").then(function(response) {
+                    $http.get(SERVER_URL + "/newpic?cacheBuster=" + (new Date().valueOf())).then(function(response) {
                         console.dir(response)
                         self.picBuffer.push(response.data);
                         if(self.picBuffer.length <= 5) {
