@@ -66,7 +66,7 @@ var NEW_PICTURE = 30 * 1000;
                 var loadPic = function() {
                     loading = true;
                     $http.get(SERVER_URL + "/newpic").then(function(response) {
-                        picBuffer.push(nextPic);
+                        picBuffer.push(response.data);
                         if(picBuffer.length <= 5) {
                             loadPic();
                         } else {
