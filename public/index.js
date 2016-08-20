@@ -55,7 +55,7 @@ var NEW_PICTURE = 30 * 1000;
 
 
             function changePicture() {
-                picBuffer.splice(0,1);
+                self.picBuffer.splice(0,1);
                 loadNewPicture();
             }
 
@@ -66,7 +66,7 @@ var NEW_PICTURE = 30 * 1000;
                 var loadPic = function() {
                     loading = true;
                     $http.get(SERVER_URL + "/newpic").then(function(response) {
-                        picBuffer.push(response.data);
+                        self.picBuffer.push(response.data);
                         if(picBuffer.length <= 5) {
                             loadPic();
                         } else {
@@ -88,7 +88,7 @@ var NEW_PICTURE = 30 * 1000;
                 }
 
                 self.voting = true;
-                $http.post(SERVER_URL + "/" + picBuffer[0]._id + "/votes" , {"type": "UP"}).then(function() {
+                $http.post(SERVER_URL + "/" + self.picBuffer[0]._id + "/votes" , {"type": "UP"}).then(function() {
                     self.voting = false;
                 })
                 changePicture()
@@ -101,7 +101,7 @@ var NEW_PICTURE = 30 * 1000;
                 }
 
                 self.voting = true;
-                $http.post(SERVER_URL + "/" + picBuffer[0]._id + "/votes", {"type": "DOWN"}).then(function() {
+                $http.post(SERVER_URL + "/" + self.picBuffer[0]._id + "/votes", {"type": "DOWN"}).then(function() {
                         self.voting = false;
                 })
                 changePicture()
