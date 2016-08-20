@@ -34,6 +34,12 @@ db.connect(function(err) {
         })
     })
 
+    app.get('/get', function(req, res) {
+        getAll(function(pics) {
+            res.status(200).json(pics);
+        })
+    })
+
     app.get('/stats', function(req, res) {
         getAllVotes(function(votes) {
             getHighestRating(function(highestRating) {
@@ -111,6 +117,12 @@ function reindexFiles() {
     });
 }
 
+function getAll(cb) {
+    collections.find().toArray(function(err, pics) {
+        cb(pics);
+    })
+}
+
 function getAllKnownFiles(cb) {
     collection.find().toArray(function(err, pics) {
 
@@ -155,7 +167,9 @@ function getAverageRating(cb) {
     collection.find().toArray(function(err, array) {
         cb(array.map(function(pic) {
             if(isNaN(pic.rating)) {
-                console.log("NaN")
+                pic.votes = 0;
+                pic.rating = 0;
+                save(pic, function() {});
                 return 0;
             }
             return pic.rating;

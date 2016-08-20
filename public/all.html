@@ -1,0 +1,46 @@
+<html ng-app="picvoter">
+<head>
+    <title>Picvoter</title>
+    <style>
+    img {
+        width: 200px;
+        height: 200px;
+
+    }
+    .container {
+        width: 100%;
+        display: flex;
+    }
+    .pic {
+        height: 220px;
+        width: 220px;
+        display: inline;
+    }
+    .pic span {
+        position: relative;
+        bottom: -42px;
+        right: 63px;
+        height: 20px;
+        width: 20px;
+        font-size: 25px;
+        padding: 3px;
+        background-color: white;
+    }
+    img {
+        object-fit: scale-down;
+    }
+    </style>
+    <link rel="stylesheet" type="text/css" href="./bootstrap.min.css">
+</head>
+<body ng-controller="AllController as ctrl" clas="container-fluid" ng-keydown=ctrl.keyDown($event)>
+
+    <script src="./angular.js"></script>
+    <script src="./index.js"></script>
+    <div class="col-md-12">
+        <div class="pic" ng-repeat="pic in ctrl.pics">
+            <img ng-src="/pics/{{pic.filename}}">
+            <span>{{pic.rating}}</span>
+        </div>
+    </div>
+</body>
+</html>
