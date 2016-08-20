@@ -27,6 +27,7 @@ var NEW_PICTURE = 30 * 1000;
             var timeout;
 
             loadNewPicture();
+            $timeout(loadNewPicture, 100);
 
             var upKeys = "uiopü+jklöä#nm,.-"
             var downKeys = 'qwertasdfgyxcv'
