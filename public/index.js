@@ -69,7 +69,7 @@ var NEW_PICTURE = 30 * 1000;
                     $http.get(SERVER_URL + "/newpic?cacheBuster=" + (new Date().valueOf())).then(function(response) {
                         if(!self.picBuffer.map(function(pic) {
                                 return response.data._id == pic._id
-                            }).collect(function(a,b) {
+                            }).reduce(function(a,b) {
                                 return a || b;
                             })) {
                             self.picBuffer.push(response.data);
