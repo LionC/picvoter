@@ -34,6 +34,22 @@ db.connect(function(err) {
         })
     })
 
+    app.get('/stats', function(req, res) {
+        getAllVotes(function(votes) {
+            getHighestRating(function(highestRating) {
+                getAverageRating(function(averageRating) {
+                    res.status(200).json({
+                        'allVotes': votes,
+                        'rating': {
+                            'highest': highestRating,
+                            'average': averageRating
+                        }
+                    })
+                })
+            })
+        })
+    })
+
     app.post('/:picId/votes', function(req, res) {
         if(isNaN(req.pic.rating)) {
             req.pic.votes = 0;
@@ -116,6 +132,33 @@ function createNewPic(filename, cb) {
     };
 
     collection.insertOne(newPic, cb || function(){});
+}
+
+
+function getAllVotes(cb) {
+    collection.find().toArray(function (err, array) {
+        cb(array.map(function(pic) {
+            return pic.votes;
+        }).reduce(function(a, b) {
+            return a + b;
+        }));
+    })
+}
+
+function getHighestRating(cb) {
+    collection.find().sort({'rating:': -1}).limit(1).nextObject(function(err, pic) {
+        cb(pic.rating);
+    });
+}
+
+function getAverageRating(cb) {
+    collection.find().toArray(function(err, array) {
+        cb(array.map(function(pic) {
+            return pic.rating;
+        }).reduce(function(a,b) {
+            return a + b;
+        }) / array.length);
+    });
 }
 
 function save(pic, cb) {
