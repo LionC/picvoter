@@ -17,8 +17,12 @@ var NEW_PICTURE = 30 * 1000;
             self.upVote = upVote;
             self.downVote = downVote;
             self.keyDown = keyDown;
+            self.getNextPicUrl = getNextPicUrl;
 
             var pic;
+            var nextPic;
+
+            self.voting = false;
 
             var timeout;
 
@@ -46,9 +50,15 @@ var NEW_PICTURE = 30 * 1000;
                 return SERVER_URL + "/pics/" + pic.filename;
             }
 
+            function getNextPicUrl() {
+
+                    return SERVER_URL + "/pics/" + nextPic.filename;
+            }
             function loadNewPicture() {
+                pic = nextPic;
+                nextPic = undefined;
                 $http.get(SERVER_URL + "/newpic").then(function(response) {
-                    pic = response.data;
+                    nextPic = response.data;
                 }).catch(function(err) {
                     console.log("error")
                     console.dir(err)
@@ -57,17 +67,28 @@ var NEW_PICTURE = 30 * 1000;
             }
 
             function upVote() {
+                if(self.voting) {
+                    return;
+                }
+
+                self.voting = true;
                 $http.post(SERVER_URL + "/" + pic._id + "/votes" , {"type": "UP"}).then(function() {
-                    loadNewPicture();
+                    self.voting = false;
                 })
+                loadNewPicture();
             }
 
 
             function downVote() {
+                if(self.voting) {
+                    return;
+                }
 
-                    $http.post(SERVER_URL + "/" + pic._id + "/votes", {"type": "DOWN"}).then(function() {
-                    loadNewPicture();
+                voting = true;
+                $http.post(SERVER_URL + "/" + pic._id + "/votes", {"type": "DOWN"}).then(function() {
+                        self.voting = false;
                 })
+                loadNewPicture();
             }
 
 
