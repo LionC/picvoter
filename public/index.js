@@ -18,7 +18,7 @@ var NEW_PICTURE = 30 * 1000;
             self.downVote = downVote;
             self.keyDown = keyDown;
 
-            var picBuffer = [];
+            self.picBuffer = [];
 
             self.voting = false;
 
