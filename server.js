@@ -138,8 +138,8 @@ function getLowestVotedPic(cb) {
             return;
         }
         var elem = array[parseInt(Math.random() * array.length)];
-        console.log("serving with rate " + elem.rating + " and votes " + elem.votes);
         cb(err, elem)
+        console.log("serving with rate " + elem.rating + " and votes " + elem.votes);
     });
 }
 
