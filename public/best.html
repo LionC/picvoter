@@ -38,8 +38,11 @@
     <script src="./index.js"></script>
     <div class="col-md-12">
         <div class="pic" ng-repeat="pic in ctrl.pics">
-            <img ng-src="/pics/{{pic.filename}}">
-            <span>{{pic.rating}}</span>
+            <img ng-src="{{pic.filename}}">
+            <span>{{pic.confidenceLevel | number:2}}</span>
+            <span>{{pic.ups}} - {{pic.downs}}</span>
+
+            <span>{{pic.ups / (pic.ups + pic.downs) | number: 2}}</span>
         </div>
     </div>
 </body>

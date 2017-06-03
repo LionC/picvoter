@@ -1,6 +1,6 @@
 'use strict';
 
-var SERVER_URL = ""
+var SERVER_URL = "http://localhost:8080"
 var NEW_PICTURE = 30 * 1000;
 
 
@@ -50,7 +50,7 @@ var NEW_PICTURE = 30 * 1000;
             }
 
             function getPicUrl(pic) {
-                return SERVER_URL + "/pics/" + pic.filename;
+                return SERVER_URL + pic.filename;
             }
 
 
@@ -138,7 +138,7 @@ var NEW_PICTURE = 30 * 1000;
             }
 
             function getUrl(pics) {
-                return SERVER_URL + "/pics/" + pic.filename;
+                return SERVER_URL + pic.filename;
             }
         }
     ])
