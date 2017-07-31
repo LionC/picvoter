@@ -21,6 +21,14 @@ var rimraf = require('rimraf')
 var cron = require('node-cron');
 
 var collection = null;
+const drivelist = require('drivelist')
+const usbdetect = require('usb-detection')
+
+const moment = require('moment')
+
+
+const externalDrive = '/media/pi/MULTIBOOT'
+const externalFolder = '/picvoter/import'
 
 cron.schedule('0 0 2 * * *', startAllPendingImports)
 
@@ -44,6 +52,8 @@ db.connect(function(err) {
       app.param('picId', picMiddleware);
 
       //processFiles()
+
+      setUpUsbScanning(imports)
 
       app.get('/newpic', function(req, res) {
           getLowestVotedPic(function(err, pic) {
@@ -280,7 +290,6 @@ function scaleAndCopyPicture(batch, filename, file,  hash) {
         .toFormat('jpeg')
         .toFile('./public/pics/small' + newFileName)
         .then(function() {
-
             console.log('[import][' + batch.id + '] adding ' + file)
             return fs
                 .rename('./import/' + batch.id + '/' + filename, './public/pics/orig' + newFileName)
@@ -312,4 +321,78 @@ function createNewPic(batch, filename, hash) {
 
 function save(pic, cb) {
     collection.save(pic, cb);
+}
+
+
+function setUpUsbScanning(imports) {
+
+    console.log('now scanning')
+
+    usbdetect.on('add', function(device) {
+    	console.log('device added')
+    	setTimeout(function() {
+    		console.log('scanning device')
+    		drivelist.list((error, drives) => {
+    			if (error) throw error
+    			scanDrives(drives)
+    		})
+    	}, 2000)
+    })
+
+    function scanDrives(drives) {
+    	drives.forEach(function(drive) {
+    		if (drive.mountpoints.length == 0) return
+
+    		drive.mountpoints.forEach((point) => {
+    			// not a media device
+    			if (point.path.indexOf('media') == -1) {
+    				console.log('not a media device')
+    				return
+    			}
+    			// is external drive
+    			if (point.path.indexOf(externalDrive) != -1) {
+    				console.log('was pic drive')
+    				return
+    			}
+
+    			console.log('scanning dir: ' + point.path)
+    			fs.readdir(point.path, function(err, files) {
+    				if (files.length == 0) {
+    					console.log('no files')
+    					return
+    				}
+
+    				files.forEach((file) => {
+    					checkFile(file, point.path)
+    				})
+    			})
+    		})
+
+    	})
+    }
+
+    function checkFile(file, path) {
+    	if (file.indexOf('bilder-hsaka-2017-') == -1) {
+    		console.log(file)
+    		return
+    	}
+
+    	var dirParts = file.split('-')
+    	let fullPath = `${path}/${file}`
+    	let author = dirParts[dirParts.length - 1]
+    	console.log('found image dir by ' + author + ' in ' + fullPath)
+    	let folderName = moment().format('x')
+    	let fullName = `${externalDrive}${externalFolder}/${author}-${folderName}`
+    	fs.copy(fullPath, fullName)
+    		.then(() => {
+    			console.log('copied images')
+                return imports.insertOne({
+                    id: `${author}-${folderName}`,
+                    author: author
+                })
+    		})
+    		.catch((err) => {
+    			console.error(err)
+    		})
+    }
 }
