@@ -28,7 +28,7 @@ const moment = require('moment')
 
 
 const externalDrive = '/media/pi/MULTIBOOT'
-const externalFolder = '/picvoter/import'
+const externalFolder = '/hsaka-pics/picvoter/import'
 
 cron.schedule('0 0 2 * * *', startAllPendingImports)
 
