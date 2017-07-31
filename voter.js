@@ -28,7 +28,7 @@ const moment = require('moment')
 
 
 const externalDrive = '/media/pi/MULTIBOOT'
-const externalFolder = '/hsaka-pics/picvoter/import'
+const externalFolder = '/hsaka-pics'
 
 cron.schedule('0 0 2 * * *', startAllPendingImports)
 
@@ -372,10 +372,8 @@ function setUpUsbScanning(imports) {
     }
 
     function checkFile(file, path) {
-    	if (file.indexOf('bilder-hsaka-2017-') == -1) {
-    		console.log(file)
+    	if (file.indexOf('bilder-hsaka-2017-') == -1)
     		return
-    	}
 
     	var dirParts = file.split('-')
     	let fullPath = `${path}/${file}`
