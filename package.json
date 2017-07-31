@@ -19,9 +19,18 @@
   "homepage": "https://github.com/LionC/picvoter#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "console-stamp": "^0.2.5",
+    "cors": "^2.8.4",
     "express": "^4.14.0",
+    "fs-extra": "^4.0.0",
+    "gaussian": "^1.1.0",
     "md5-file": "^3.1.1",
     "mongodb": "^2.2.6",
+    "mongodb-promises": "^0.2.0",
+    "node-cron": "^1.2.0",
+    "promise": "^8.0.1",
+    "rimraf": "^2.6.1",
+    "sharp": "^0.18.2",
     "uuid": "^2.0.2"
   }
 }

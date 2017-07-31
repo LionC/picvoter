@@ -1,4 +1,4 @@
-<html ng-app="picvoter">
+/*<html ng-app="picvoter">
 <head>
     <title>Picvoter</title>
     <style>
@@ -40,6 +40,7 @@
         <div class="pic" ng-repeat="pic in ctrl.pics">
             <img ng-src="{{pic.filename}}">
             <span>{{pic.confidenceLevel | number:2}}</span>
+            <span>{{pic.sorting | number:2}}</span>
             <span>{{pic.ups}} - {{pic.downs}}</span>
 
             <span>{{pic.ups / (pic.ups + pic.downs) | number: 2}}</span>
