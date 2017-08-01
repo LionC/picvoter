@@ -354,7 +354,7 @@ function setUpUsbScanning(imports) {
             if (drive.mountpoints.length == 0) return
 
             drive.mountpoints.forEach((point) => {
-                console.log(`checking device ${point}`)
+                console.log(`checking device ${point.path}`)
                 // not a media device
                 if (point.path.indexOf('media') == -1) {
                     console.log('not a media device')
