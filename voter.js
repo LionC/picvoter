@@ -218,44 +218,46 @@ function processImport(batch) {
 
     batch.status = 'importing'
 
+    var currentImportPath = `${externalPath}/import` + batch.id
+
     return fs
-    .readdir('import/' + batch.id)
-    .then(onDirRead);
+        .readdir(currentImportPath)
+        .then(onDirRead);
 
-    function onDirRead(files) {
-        console.log('[import][' + batch.id + '] found ' + files.length + ' files')
+        function onDirRead(files) {
+            console.log('[import][' + batch.id + '] found ' + files.length + ' files')
 
-        batch.files = files.length
-        batch.started = new Date()
+            batch.files = files.length
+            batch.started = new Date()
 
-        imports.save(batch)
+            imports.save(batch)
 
-        var promisses = files.map(file => processFile(batch, file))
+            var promisses = files.map(file => processFile(batch, file))
 
-        return Promise
-        .all(promisses)
-        .then(values => {
-            console.log('deleting import/' + batch.id)
+            return Promise
+                .all(promisses)
+                .then(values => {
+                    console.log('deleting import/' + batch.id)
 
-            rimraf.sync('import/' + batch.id, {},  err => {})
+                    rimraf.sync(currentImportPath, {},  err => {})
 
-            return imports
-            .findOne({_id: batch._id}, (err, batch) => {
-                if(err != null) {
+                    return imports
+                    .findOne({_id: batch._id}, (err, batch) => {
+                        if(err != null) {
+                            console.error(err)
+                        }
+                        batch.status = 'done'
+                        batch.ended = new Date()
+                        var dif = batch.ended - batch.started
+                        batch.took = dif / 1000
+                        console.log('import ' + batch.id + ' done. took ' + batch.took + 's')
+                        return imports.save(batch)
+                    })
+                })
+                .catch(err => {
                     console.error(err)
-                }
-                batch.status = 'done'
-                batch.ended = new Date()
-                var dif = batch.ended - batch.started
-                batch.took = dif / 1000
-                console.log('import ' + batch.id + ' done. took ' + batch.took + 's')
-                return imports.save(batch)
-            })
-        })
-        .catch(err => {
-            console.error(err)
-        })
-    }
+                })
+        }
 }
 
 function processFile(batch, file) {
