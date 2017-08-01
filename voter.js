@@ -283,7 +283,7 @@ function scaleAndCopyPicture(batch, filename, file,  hash) {
     var newFileName = authorDir + '/' + file
 
     var currentImportPath = `${externalPath}/import/` + batch.id + '/' + filename
-    var publicPath = `${externalPath}/public/`
+    var publicPath = `${externalPath}/public`
 
     if (!fs.existsSync(publicPath + '/small' + authorDir)){
         fs.mkdirSync(publicPath + '/small' + authorDir);
