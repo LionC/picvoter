@@ -26,7 +26,6 @@ const usbdetect = require('usb-detection')
 
 const moment = require('moment')
 
-
 const externalDrive = '/media/pi/MULTIBOOT'
 const externalFolder = '/hsaka-pics'
 
@@ -35,93 +34,94 @@ const externalPath = externalDrive + externalFolder
 cron.schedule('0 0 2 * * *', startAllPendingImports)
 
 db.connect(function(err) {
-      assert.equal(err, null);
+    assert.equal(err, null);
 
-      collection = db.collection('pics');
+    collection = db.collection('pics');
 
-      imports = db.collection('imports');
+    imports = db.collection('imports');
 
-      collection.ensureIndex({sorting: -1, confidenceLevel: 1})
+    collection.ensureIndex({sorting: -1})
+    collection.ensureIndex({confidenceLevel: 1})
 
-      var app = express();
+    var app = express();
 
-      app.use(cors())
+    app.use(cors())
 
-      app.use(bodyParser.json())
+    app.use(bodyParser.json())
 
-      app.use(express.static('public'))
+    app.use(express.static('public'))
     app.use(express.static('${externalDrive}${externalFolder}'))
 
-      app.param('picId', picMiddleware);
+    app.param('picId', picMiddleware);
 
-      //processFiles()
+    //processFiles()
 
-      setUpUsbScanning(imports)
+    setUpUsbScanning(imports)
 
-      app.get('/newpic', function(req, res) {
-          getLowestVotedPic(function(err, pic) {
-              if(err == "NOT FOUND") {
-                  res.status(404).send();
-                  return;
-              }
+    app.get('/newpic', function(req, res) {
+        getLowestVotedPic(function(err, pic) {
+            if(err == "NOT FOUND") {
+                res.status(404).send();
+                return;
+            }
 
-              res.status(200).json(pic);
-          });
-      })
+            res.status(200).json(pic);
+        });
+    })
 
-      app.post('/:picId/votes', function(req, res) {
-          if(isNaN(req.pic.ups)) {
-              req.pic.ups = 0;
-              req.pic.downs = 0;
-          }
-          if(req.body.type == "UP") {
-              req.pic.ups++;
-          } else {
-              req.pic.downs++;
-          }
+    app.post('/:picId/votes', function(req, res) {
+        if(isNaN(req.pic.ups)) {
+            req.pic.ups = 0;
+            req.pic.downs = 0;
+        }
+        if(req.body.type == "UP") {
+            req.pic.ups++;
+        } else {
+            req.pic.downs++;
+        }
 
-          req.pic.sorting = confidenceLevel(req.pic.ups, req.pic.downs)
-          req.pic.confidenceLevel = Math.abs(0.5 - confidenceLevel(req.pic.ups, req.pic.downs))
+        req.pic.sorting = confidenceLevel(req.pic.ups, req.pic.downs)
+        req.pic.confidenceLevel = Math.abs(0.5 - confidenceLevel(req.pic.ups, req.pic.downs))
 
-          save(req.pic, function(err) {
-              assert.equal(err, null);
+        save(req.pic, function(err) {
+            assert.equal(err, null);
 
-              res.status(201).send();
-          });
-      });
-
-
-      app.get('/hotpics', function(req, res) {
-          getBestPictures(function(err, pics) {
-              res.status(200).json(pics);
-          })
-      })
+            res.status(201).send();
+        });
+    });
 
 
-     app.get('/imports/actions/start', function (req,res) {
-         startAllPendingImports()
-         res.status(201)
-     })
+    app.get('/hotpics', function(req, res) {
+        getBestPictures(function(err, pics) {
+            res.status(200).json(pics);
+        })
+    })
 
-     app.get('/imports', function (req,res) {
-         imports.find().toArray(function(err, array)  {
 
-             if(err != null){
-                 console.log(err);
-             }
-             if(array == undefined && array.length == 0) {
-                 res.status(200).json([])
-                 return;
-             }
-             res.status(200).json(array)
-         })
-     })
+    app.get('/imports/actions/start', function (req,res) {
+        startAllPendingImports()
+        res.status(201)
+    })
 
-      app.listen(8080, function(err) {
-          assert.equal(err, null);
+    app.get('/imports', function (req,res) {
+        imports.find().toArray(function(err, array)  {
 
-          console.log('Listening on 8080');
-      });
+            if(err != null){
+                console.log(err);
+            }
+            if(array == undefined && array.length == 0) {
+                res.status(200).json([])
+                return;
+            }
+            res.status(200).json(array)
+        })
+    })
+
+    app.listen(8080, function(err) {
+        assert.equal(err, null);
+
+        console.log('Listening on 8080');
+    });
 })
 
 function randomWithBias(max) {
@@ -134,37 +134,37 @@ function randomWithBias(max) {
 function getLowestVotedPic(cb) {
 
     collection
-        .count()
-        .then(length => {
+    .count()
+    .then(length => {
 
-            var random = randomWithBias(length / 2)
+        var random = randomWithBias(length / 2)
 
-            collection
-                .find({'sorting' : { $gt: -3}})
-                .sort({'sorting': -1})
-                .limit(1)
-                .skip(random)
-                .toArray(function(err, array) {
-                    if(err != null){
-                        console.log(err);
-                    }
-                    if(array == undefined && array.length == 0) {
-                        cb("NOT FOUND");
-                        return;
-                    }
-                    var elem = array[0];
-                    cb(err, elem)
-                    console.log("serving " + random + "s picture with level " + elem.confidenceLevel + " and votes " + (elem.ups + elem.downs));
-                });
+        collection
+        .find({'sorting' : { $gt: -3}})
+        .sort({'sorting': -1})
+        .limit(1)
+        .skip(random)
+        .toArray(function(err, array) {
+            if(err != null){
+                console.log(err);
+            }
+            if(array == undefined && array.length == 0) {
+                cb("NOT FOUND");
+                return;
+            }
+            var elem = array[0];
+            cb(err, elem)
+            console.log("serving " + random + "s picture with level " + elem.confidenceLevel + " and votes " + (elem.ups + elem.downs));
+        });
 
-        })
+    })
 }
 
 function confidenceLevel(ups, downs) {
     if (ups == 0) {
-      if(downs == 0)
+        if(downs == 0)
         return 0.5
-      return -downs
+        return -downs
     }
 
     n = ups + downs
@@ -194,19 +194,19 @@ function startAllPendingImports() {
 
     console.log('starting pending imports')
     imports
-        .find({status: { $exists: false }})
-        .toArray(function(err, array){
-            if(err != null || array.length == 0) {
-                console.log("did not find any imports pending!")
-                return
-            }
+    .find({status: { $exists: false }})
+    .toArray(function(err, array){
+        if(err != null || array.length == 0) {
+            console.log("did not find any imports pending!")
+            return
+        }
 
-            array.reduce((promise, elem) => {
-                return promise.then(a => {
-                    return processImport(elem)
-                })
-            }, Promise.resolve())
-        })
+        array.reduce((promise, elem) => {
+            return promise.then(a => {
+                return processImport(elem)
+            })
+        }, Promise.resolve())
+    })
 }
 
 function processImport(batch) {
@@ -219,8 +219,8 @@ function processImport(batch) {
     batch.status = 'importing'
 
     return fs
-        .readdir('import/' + batch.id)
-        .then(onDirRead);
+    .readdir('import/' + batch.id)
+    .then(onDirRead);
 
     function onDirRead(files) {
         console.log('[import][' + batch.id + '] found ' + files.length + ' files')
@@ -233,28 +233,28 @@ function processImport(batch) {
         var promisses = files.map(file => processFile(batch, file))
 
         return Promise
-            .all(promisses)
-            .then(values => {
-                console.log('deleting import/' + batch.id)
+        .all(promisses)
+        .then(values => {
+            console.log('deleting import/' + batch.id)
 
-                rimraf.sync('import/' + batch.id, {},  err => {})
+            rimraf.sync('import/' + batch.id, {},  err => {})
 
-                return imports
-                    .findOne({_id: batch._id}, (err, batch) => {
-                        if(err != null) {
-                            console.error(err)
-                        }
-                        batch.status = 'done'
-                        batch.ended = new Date()
-                        var dif = batch.ended - batch.started
-                        batch.took = dif / 1000
-                        console.log('import ' + batch.id + ' done. took ' + batch.took + 's')
-                        return imports.save(batch)
-                    })
+            return imports
+            .findOne({_id: batch._id}, (err, batch) => {
+                if(err != null) {
+                    console.error(err)
+                }
+                batch.status = 'done'
+                batch.ended = new Date()
+                var dif = batch.ended - batch.started
+                batch.took = dif / 1000
+                console.log('import ' + batch.id + ' done. took ' + batch.took + 's')
+                return imports.save(batch)
             })
-            .catch(err => {
-                console.error(err)
-            })
+        })
+        .catch(err => {
+            console.error(err)
+        })
     }
 }
 
@@ -264,15 +264,15 @@ function processFile(batch, file) {
     var hash = md5File.sync('import/' + batch.id + '/' + filename)
 
     return collection
-        .findOne({hash: hash})
-        .then (function(err, result) {
-            if(result == null) {
-                return scaleAndCopyPicture(batch, filename, file, hash)
-            }
-        })
-        .catch(err => {
-            console.error(err)
-        })
+    .findOne({hash: hash})
+    .then (function(err, result) {
+        if(result == null) {
+            return scaleAndCopyPicture(batch, filename, file, hash)
+        }
+    })
+    .catch(err => {
+        console.error(err)
+    })
 }
 
 function scaleAndCopyPicture(batch, filename, file,  hash) {
@@ -280,32 +280,32 @@ function scaleAndCopyPicture(batch, filename, file,  hash) {
     var newFileName = authorDir + '/' + file
 
     if (!fs.existsSync('./public/pics/small' + authorDir)){
-      fs.mkdirSync('./public/pics/small' + authorDir);
+        fs.mkdirSync('./public/pics/small' + authorDir);
     }
 
     if (!fs.existsSync('./public/pics/orig' + authorDir)){
-      fs.mkdirSync('./public/pics/orig' + authorDir);
+        fs.mkdirSync('./public/pics/orig' + authorDir);
     }
 
     var currentImportPath = '${externalPath}/import/' + batch.id + '/' + filename
 
     return sharp(currentImportPath)
-        .resize(1920, 1200)
-        .max()
-        .toFormat('jpeg')
-        .toFile('${externalDrive}${externalFolder}/pics/small' + newFileName)
-        .then(function() {
-            console.log('[import][' + batch.id + '] adding ' + file)
-            return fs
-                .rename(currentImportPath, '${externalDrive}${externalFolder}/pics/orig' + newFileName)
-                .then(a => {
-                    return createNewPic(batch, '/pics/small' + newFileName, hash)
-                })
-            })
-        .catch(function (error) {
-            console.log('[import][' + batch.id + '] error resizing ' + file)
-            console.dir(error)
+    .resize(1920, 1200)
+    .max()
+    .toFormat('jpeg')
+    .toFile('${externalDrive}${externalFolder}/pics/small' + newFileName)
+    .then(function() {
+        console.log('[import][' + batch.id + '] adding ' + file)
+        return fs
+        .rename(currentImportPath, '${externalDrive}${externalFolder}/pics/orig' + newFileName)
+        .then(a => {
+            return createNewPic(batch, '/pics/small' + newFileName, hash)
         })
+    })
+    .catch(function (error) {
+        console.log('[import][' + batch.id + '] error resizing ' + file)
+        console.dir(error)
+    })
 }
 
 
@@ -334,68 +334,68 @@ function setUpUsbScanning(imports) {
     console.log('now scanning')
 
     usbdetect.on('add', function(device) {
-    	console.log('device added')
-    	setTimeout(function() {
-    		console.log('scanning device')
-    		drivelist.list((error, drives) => {
-    			if (error) throw error
-    			scanDrives(drives)
-    		})
-    	}, 2000)
+        console.log('device added')
+        setTimeout(function() {
+            console.log('scanning device')
+            drivelist.list((error, drives) => {
+                if (error) throw error
+                scanDrives(drives)
+            })
+        }, 2000)
     })
 
     function scanDrives(drives) {
-    	drives.forEach(function(drive) {
-    		if (drive.mountpoints.length == 0) return
+        drives.forEach(function(drive) {
+            if (drive.mountpoints.length == 0) return
 
-    		drive.mountpoints.forEach((point) => {
-    			// not a media device
-    			if (point.path.indexOf('media') == -1) {
-    				console.log('not a media device')
-    				return
-    			}
-    			// is external drive
-    			if (point.path.indexOf(externalDrive) != -1) {
-    				console.log('was pic drive')
-    				return
-    			}
+            drive.mountpoints.forEach((point) => {
+                // not a media device
+                if (point.path.indexOf('media') == -1) {
+                    console.log('not a media device')
+                    return
+                }
+                // is external drive
+                if (point.path.indexOf(externalDrive) != -1) {
+                    console.log('was pic drive')
+                    return
+                }
 
-    			console.log('scanning dir: ' + point.path)
-    			fs.readdir(point.path, function(err, files) {
-    				if (files.length == 0) {
-    					console.log('no files')
-    					return
-    				}
+                console.log('scanning dir: ' + point.path)
+                fs.readdir(point.path, function(err, files) {
+                    if (files.length == 0) {
+                        console.log('no files')
+                        return
+                    }
 
-    				files.forEach((file) => {
-    					checkFile(file, point.path)
-    				})
-    			})
-    		})
+                    files.forEach((file) => {
+                        checkFile(file, point.path)
+                    })
+                })
+            })
 
-    	})
+        })
     }
 
     function checkFile(file, path) {
-    	if (file.indexOf('bilder-hsaka-2017-') == -1)
-    		return
+        if (file.indexOf('bilder-hsaka-2017-') == -1)
+        return
 
-    	var dirParts = file.split('-')
-    	let fullPath = `${path}/${file}`
-    	let author = dirParts[dirParts.length - 1]
-    	console.log('found image dir by ' + author + ' in ' + fullPath)
-    	let folderName = moment().format('x')
-    	let fullName = `${externalDrive}${externalFolder}/import/${author}-${folderName}`
-    	fs.copy(fullPath, fullName)
-    		.then(() => {
-    			console.log('copied images')
-                return imports.insertOne({
-                    id: `${author}-${folderName}`,
-                    author: author
-                })
-    		})
-    		.catch((err) => {
-    			console.error(err)
-    		})
+        var dirParts = file.split('-')
+        let fullPath = `${path}/${file}`
+        let author = dirParts[dirParts.length - 1]
+        console.log('found image dir by ' + author + ' in ' + fullPath)
+        let folderName = moment().format('x')
+        let fullName = `${externalDrive}${externalFolder}/import/${author}-${folderName}`
+        fs.copy(fullPath, fullName)
+        .then(() => {
+            console.log('copied images')
+            return imports.insertOne({
+                id: `${author}-${folderName}`,
+                author: author
+            })
+        })
+        .catch((err) => {
+            console.error(err)
+        })
     }
 }
