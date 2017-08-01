@@ -50,7 +50,7 @@ db.connect(function(err) {
     app.use(bodyParser.json())
 
     app.use(express.static('public'))
-    app.use(express.static('${externalDrive}${externalFolder}'))
+    app.use(express.static(`${externalDrive}${externalFolder}`))
 
     app.param('picId', picMiddleware);
 
@@ -287,17 +287,17 @@ function scaleAndCopyPicture(batch, filename, file,  hash) {
         fs.mkdirSync('./public/pics/orig' + authorDir);
     }
 
-    var currentImportPath = '${externalPath}/import/' + batch.id + '/' + filename
+    var currentImportPath = `${externalPath}/import` + batch.id + '/' + filename
 
     return sharp(currentImportPath)
     .resize(1920, 1200)
     .max()
     .toFormat('jpeg')
-    .toFile('${externalDrive}${externalFolder}/pics/small' + newFileName)
+    .toFile(`${externalDrive}${externalFolder}/pics/small` + newFileName)
     .then(function() {
         console.log('[import][' + batch.id + '] adding ' + file)
         return fs
-        .rename(currentImportPath, '${externalDrive}${externalFolder}/pics/orig' + newFileName)
+        .rename(currentImportPath, `${externalDrive}${externalFolder}/pics/orig` + newFileName)
         .then(a => {
             return createNewPic(batch, '/pics/small' + newFileName, hash)
         })
