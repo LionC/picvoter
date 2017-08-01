@@ -30,6 +30,8 @@ const moment = require('moment')
 const externalDrive = '/media/pi/MULTIBOOT'
 const externalFolder = '/hsaka-pics'
 
+const externalPath = externalDrive + externalFolder
+
 cron.schedule('0 0 2 * * *', startAllPendingImports)
 
 db.connect(function(err) {
@@ -48,6 +50,7 @@ db.connect(function(err) {
       app.use(bodyParser.json())
 
       app.use(express.static('public'))
+    app.use(express.static('${externalDrive}${externalFolder}'))
 
       app.param('picId', picMiddleware);
 
@@ -284,15 +287,17 @@ function scaleAndCopyPicture(batch, filename, file,  hash) {
       fs.mkdirSync('./public/pics/orig' + authorDir);
     }
 
-    return sharp('./import/' + batch.id + '/' + filename)
+    var currentImportPath = '${externalPath}/import/' + batch.id + '/' + filename
+
+    return sharp(currentImportPath)
         .resize(1920, 1200)
         .max()
         .toFormat('jpeg')
-        .toFile('./public/pics/small' + newFileName)
+        .toFile('${externalDrive}${externalFolder}/pics/small' + newFileName)
         .then(function() {
             console.log('[import][' + batch.id + '] adding ' + file)
             return fs
-                .rename('./import/' + batch.id + '/' + filename, './public/pics/orig' + newFileName)
+                .rename(currentImportPath, '${externalDrive}${externalFolder}/pics/orig' + newFileName)
                 .then(a => {
                     return createNewPic(batch, '/pics/small' + newFileName, hash)
                 })
@@ -380,7 +385,7 @@ function setUpUsbScanning(imports) {
     	let author = dirParts[dirParts.length - 1]
     	console.log('found image dir by ' + author + ' in ' + fullPath)
     	let folderName = moment().format('x')
-    	let fullName = `${externalDrive}${externalFolder}/${author}-${folderName}`
+    	let fullName = `${externalDrive}${externalFolder}/import/${author}-${folderName}`
     	fs.copy(fullPath, fullName)
     		.then(() => {
     			console.log('copied images')
