@@ -218,7 +218,7 @@ function processImport(batch) {
 
     batch.status = 'importing'
 
-    var currentImportPath = `${externalPath}/import` + batch.id
+    var currentImportPath = `${externalPath}/import/` + batch.id
 
     return fs
         .readdir(currentImportPath)
@@ -263,7 +263,7 @@ function processImport(batch) {
 function processFile(batch, file) {
     var filename = path.basename(file)
 
-    var currentImportPath = `${externalPath}/import` + batch.id + '/' + filename
+    var currentImportPath = `${externalPath}/import/` + batch.id + '/' + filename
     var hash = md5File.sync(currentImportPath)
 
     return collection
@@ -290,7 +290,7 @@ function scaleAndCopyPicture(batch, filename, file,  hash) {
         fs.mkdirSync('./public/pics/orig' + authorDir);
     }
 
-    var currentImportPath = `${externalPath}/import` + batch.id + '/' + filename
+    var currentImportPath = `${externalPath}/import/` + batch.id + '/' + filename
 
     return sharp(currentImportPath)
     .resize(1920, 1200)
