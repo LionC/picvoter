@@ -117,10 +117,10 @@ db.connect(function(err) {
         })
     })
 
-    app.listen(8080, function(err) {
+    app.listen(80, function(err) {
         assert.equal(err, null);
 
-        console.log('Listening on 8080');
+        console.log('Listening on 80');
     });
 })
 
