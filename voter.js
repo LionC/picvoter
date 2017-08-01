@@ -282,15 +282,17 @@ function scaleAndCopyPicture(batch, filename, file,  hash) {
     var authorDir = '/' + batch.author
     var newFileName = authorDir + '/' + file
 
-    if (!fs.existsSync('./public/pics/small' + authorDir)){
-        fs.mkdirSync('./public/pics/small' + authorDir);
-    }
-
-    if (!fs.existsSync('./public/pics/orig' + authorDir)){
-        fs.mkdirSync('./public/pics/orig' + authorDir);
-    }
-
     var currentImportPath = `${externalPath}/import/` + batch.id + '/' + filename
+    var publicPath = `${externalPath}/public/`
+
+    if (!fs.existsSync(publicPath + '/small' + authorDir)){
+        fs.mkdirSync(publicPath + '/small' + authorDir);
+    }
+
+    if (!fs.existsSync(publicPath + '/orig' + authorDir)){
+        fs.mkdirSync(publicPath + '/orig' + authorDir);
+    }
+
 
     return sharp(currentImportPath)
     .resize(1920, 1200)
