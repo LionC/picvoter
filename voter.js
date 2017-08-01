@@ -261,7 +261,8 @@ function processImport(batch) {
 function processFile(batch, file) {
     var filename = path.basename(file)
 
-    var hash = md5File.sync('import/' + batch.id + '/' + filename)
+    var currentImportPath = `${externalPath}/import` + batch.id + '/' + filename
+    var hash = md5File.sync(currentImportPath)
 
     return collection
     .findOne({hash: hash})
