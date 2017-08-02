@@ -75,7 +75,7 @@ db.connect(function(err) {
             req.pic.downs = 0;
         }
 
-        console.log('voted ' + req.body.type + ' on ' req.pic._id)
+        console.log('voted ' + req.body.type + ' on ' + req.pic._id)
 
         if(req.body.type == "UP") {
             req.pic.ups++;
