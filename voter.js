@@ -141,7 +141,7 @@ function getLowestVotedPic(cb) {
 
         collection
         .find({'sorting' : { $gt: -3}})
-        .sort({'confidenceLevel': -1})
+        .sort({'confidenceLevel': 1})
         .limit(1)
         .skip(random)
         .toArray(function(err, array) {
