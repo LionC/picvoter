@@ -83,8 +83,10 @@ db.connect(function(err) {
             req.pic.downs++;
         }
 
+        var votes = req.pic.ups + req.pic.downs
+
         req.pic.sorting = confidenceLevel(req.pic.ups, req.pic.downs)
-        req.pic.confidenceLevel = Math.abs(0.5 - confidenceLevel(req.pic.ups, req.pic.downs))
+        req.pic.confidenceLevel = Math.abs(0.5 - confidenceLevel(req.pic.ups, req.pic.downs)) * (votes / 40)
 
         save(req.pic, function(err) {
             assert.equal(err, null);
@@ -180,7 +182,7 @@ function getLowestVotedPic(cb) {
 function confidenceLevel(ups, downs) {
     if (ups == 0) {
         if(downs == 0)
-        return 0.5
+            return 0.5
         return -downs
     }
 
