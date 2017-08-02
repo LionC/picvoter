@@ -117,6 +117,8 @@ db.connect(function(err) {
         })
     })
 
+    // app.all("/*", express.static('public'))
+
     app.listen(80, function(err) {
         assert.equal(err, null);
 
@@ -125,9 +127,16 @@ db.connect(function(err) {
 })
 
 function randomWithBias(max) {
+    const n = 5
     var unif = Math.random()
-    var beta = 1 - Math.pow(Math.sin(unif * Math.PI / 2), 2)
-    return parseInt(Math.abs(beta * max))
+
+    const oneOver2N = 1 / Math.pow(2, n)
+    const oneOverXPlus1N = 1 / Math.pow(unif + 1, n)
+
+    var random = (oneOverXPlus1N - oneOver2N) / (1 -oneOver2N)
+    return parseInt(random * max)
+    // var beta = 1 - Math.pow(Math.sin(unif * Math.PI / 2), 2)
+    // return parseInt(Math.abs(beta * max))
 }
 
 
