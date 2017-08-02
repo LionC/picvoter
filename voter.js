@@ -74,6 +74,9 @@ db.connect(function(err) {
             req.pic.ups = 0;
             req.pic.downs = 0;
         }
+
+        console.log('voted ' + req.body.type + ' on ' req.pic._id)
+
         if(req.body.type == "UP") {
             req.pic.ups++;
         } else {
@@ -117,6 +120,7 @@ db.connect(function(err) {
         })
     })
 
+
     // app.all("/*", express.static('public'))
 
     app.listen(80, function(err) {
@@ -133,40 +137,44 @@ function randomWithBias(max) {
     const oneOver2N = 1 / Math.pow(2, n)
     const oneOverXPlus1N = 1 / Math.pow(unif + 1, n)
 
-    var random = (oneOverXPlus1N - oneOver2N) / (1 -oneOver2N)
+    var random = (oneOverXPlus1N - oneOver2N) / (1 - oneOver2N)
     return parseInt(random * max)
     // var beta = 1 - Math.pow(Math.sin(unif * Math.PI / 2), 2)
     // return parseInt(Math.abs(beta * max))
+}
+
+function getTotalUps() {
+
 }
 
 
 function getLowestVotedPic(cb) {
 
     collection
-    .count()
-    .then(length => {
+        .count()
+        .then(length => {
 
-        var random = randomWithBias(length / 2)
+            var random = randomWithBias(length / 2)
 
-        collection
-        .find({'sorting' : { $gt: -3}})
-        .sort({'confidenceLevel': 1})
-        .limit(1)
-        .skip(random)
-        .toArray(function(err, array) {
-            if(err != null){
-                console.log(err);
-            }
-            if(array == undefined && array.length == 0) {
-                cb("NOT FOUND");
-                return;
-            }
-            var elem = array[0];
-            cb(err, elem)
-            console.log("serving " + random + "s picture with level " + elem.confidenceLevel + " and votes " + (elem.ups + elem.downs));
-        });
+            collection
+                .find({'sorting' : { $gt: -3}})
+                .sort({'confidenceLevel': 1})
+                .limit(1)
+                .skip(random)
+                .toArray(function(err, array) {
+                    if(err != null){
+                        console.log(err);
+                    }
+                    if(array == undefined && array.length == 0) {
+                        cb("NOT FOUND");
+                        return;
+                    }
+                    var elem = array[0];
+                    cb(err, elem)
+                    console.log("serving " + random + "s picture with level " + elem.confidenceLevel + " and votes " + (elem.ups + elem.downs));
+                });
 
-    })
+        })
 }
 
 function confidenceLevel(ups, downs) {
