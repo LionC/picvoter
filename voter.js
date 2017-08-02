@@ -175,7 +175,7 @@ function confidenceLevel(ups, downs) {
 
 
 function getBestPictures(cb) {
-    collection.find().sort({'confidenceLevel': -1}).limit(1000).toArray(function(err, array) {
+    collection.find().sort({'confidenceLevel': 1}).limit(1000).toArray(function(err, array) {
         cb(err, array);
     })
 }
