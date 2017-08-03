@@ -190,7 +190,7 @@ function getStats() {
                     promise
                         .then(ret =>
                             collection
-                                .count({ filename: new RegExp(author, 'i')})
+                                .count({ filename: new RegExp(author._id, 'i')})
                                 .then(count => {
                                     ret[author._id] = count
                                     return ret
@@ -200,10 +200,12 @@ function getStats() {
                 Promise.resolve({})
             )
             .then(authors => {
-                return {
+                var all ={
                     authors: authors,
                     stats: ret.stats
                 }
+                all.stats.votes = all.stats.ups + all.stats.downs
+                return all
             })
         })
         .catch(err => console.error(err))
