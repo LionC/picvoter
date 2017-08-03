@@ -26,8 +26,11 @@ const usbdetect = require('usb-detection')
 
 const moment = require('moment')
 
-const externalDrive = '/media/pi/MULTIBOOT'
-const externalFolder = '/hsaka-pics'
+//const externalDrive = '/media/pi/MULTIBOOT'
+//const externalFolder = '/hsaka-pics'
+
+const externalDrive = '.'
+const externalFolder = '/public'
 
 const externalPath = externalDrive + externalFolder
 
@@ -111,8 +114,9 @@ db.connect(function(err) {
     app.get('/imports', function (req,res) {
         imports.find().toArray(function(err, array)  {
 
+            console.dir(array)
             if(err != null){
-                console.log(err);
+                console.error(err);
             }
             if(array == undefined && array.length == 0) {
                 res.status(200).json([])
@@ -213,19 +217,19 @@ function startAllPendingImports() {
 
     console.log('starting pending imports')
     imports
-    .find({status: { $exists: false }})
-    .toArray(function(err, array){
-        if(err != null || array.length == 0) {
-            console.log("did not find any imports pending!")
-            return
-        }
+        .find({status: { $exists: false }})
+        .toArray(function(err, array){
+            if(err != null || array.length == 0) {
+                console.log("did not find any imports pending!")
+                return
+            }
 
-        array.reduce((promise, elem) => {
-            return promise.then(a => {
-                return processImport(elem)
-            })
-        }, Promise.resolve())
-    })
+            array.reduce((promise, elem) => {
+                return promise.then(a => {
+                    return processImport(elem)
+                })
+            }, Promise.resolve())
+        })
 }
 
 function processImport(batch) {
@@ -286,15 +290,17 @@ function processFile(batch, file) {
     var hash = md5File.sync(currentImportPath)
 
     return collection
-    .findOne({hash: hash})
-    .then (function(err, result) {
-        if(result == null) {
-            return scaleAndCopyPicture(batch, filename, file, hash)
-        }
-    })
-    .catch(err => {
-        console.error(err)
-    })
+        .findOne({hash: hash})
+        .then(function(result) {
+            if(!result) {
+                return scaleAndCopyPicture(batch, filename, file, hash)
+            } else {
+                console.log('skipping, because of dublicate')
+            }
+        })
+        .catch(err => {
+            console.error(err)
+        })
 }
 
 function scaleAndCopyPicture(batch, filename, file,  hash) {
