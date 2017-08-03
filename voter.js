@@ -26,11 +26,11 @@ const usbdetect = require('usb-detection')
 
 const moment = require('moment')
 
-//const externalDrive = '/media/pi/MULTIBOOT'
-//const externalFolder = '/hsaka-pics'
+const externalDrive = '/media/pi/MULTIBOOT'
+const externalFolder = '/hsaka-pics'
 
-const externalDrive = '.'
-const externalFolder = '/public'
+//const externalDrive = '.'
+//const externalFolder = '/public'
 
 const externalPath = externalDrive + externalFolder
 
