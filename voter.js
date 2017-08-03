@@ -126,8 +126,12 @@ db.connect(function(err) {
         })
     })
 
-
-    // app.all("/*", express.static('public'))
+    app.get('/stats', function (req, res) {
+        getStats()
+            .then(function (stats) {
+                res.status(200).json(stats)
+            })
+    })
 
     app.listen(80, function(err) {
         assert.equal(err, null);
@@ -149,8 +153,60 @@ function randomWithBias(max) {
     // return parseInt(Math.abs(beta * max))
 }
 
-function getTotalUps() {
-
+function getStats() {
+    return collection
+        .aggregate([
+            {
+                $group: {
+                    _id: null,
+                    ups: { $sum: "$ups" },
+                    downs: { $sum: "$downs" },
+                    pictures: {$sum: 1},
+                }
+            }
+        ])
+        .toArray()
+        .then((stats) =>
+            imports
+                .aggregate([
+                        {
+                            $group: {
+                                _id: "$author"
+                            }
+                        }
+                    ]
+                )
+                .toArray()
+                .then((authors) => {
+                    return {
+                            authors: authors,
+                            stats: stats[0]
+                        }
+                })
+        )
+        .then(ret => {
+            return ret.authors.reduce(
+                    (promise, author) =>
+                    promise
+                        .then(ret =>
+                            collection
+                                .count({ filename: new RegExp(author, 'i')})
+                                .then(count => {
+                                    ret[author._id] = count
+                                    return ret
+                                })
+                        )
+                ,
+                Promise.resolve({})
+            )
+            .then(authors => {
+                return {
+                    authors: authors,
+                    stats: ret.stats
+                }
+            })
+        })
+        .catch(err => console.error(err))
 }
 
 
@@ -198,7 +254,7 @@ function confidenceLevel(ups, downs) {
 
 
 function getBestPictures(cb) {
-    collection.find().sort({'confidenceLevel': 1}).limit(1000).toArray(function(err, array) {
+    collection.find().sort({'sorting': -1}).limit(1000).toArray(function(err, array) {
         cb(err, array);
     })
 }
