@@ -89,7 +89,7 @@ db.connect(function(err) {
         var votes = req.pic.ups + req.pic.downs
 
         req.pic.sorting = confidenceLevel(req.pic.ups, req.pic.downs)
-        req.pic.confidenceLevel = Math.abs(0.5 - confidenceLevel(req.pic.ups, req.pic.downs)) * (votes / 40)
+        req.pic.confidenceLevel = Math.abs(0.5 - confidenceLevel(req.pic.ups, req.pic.downs)) * (votes / 10)
 
         save(req.pic, function(err) {
             assert.equal(err, null);
