@@ -72,6 +72,32 @@ db.connect(function(err) {
         });
     })
 
+    app.get('/pics/actions/recalc', function (res, req) {
+
+        console.log("recalculating sorting!")
+        collection
+            .find()
+            .toArray()
+            .then(pics => {
+                return Promise.all(
+                        pics.map(pic => {
+                            pic = fillPicWithSortings(pic)
+                            return collection
+                                .save(pic)
+                        })
+                )
+                .then(array => {
+                    console.log("done recalculating!")
+                    req.status(200).send()
+                })
+            })
+            .catch(err => {
+                console.log("error while recalculating")
+                console.dir(err)
+                req.status(500).json(err)
+            })
+    })
+
     app.post('/:picId/votes', function(req, res) {
         if(isNaN(req.pic.ups)) {
             req.pic.ups = 0;
@@ -86,10 +112,7 @@ db.connect(function(err) {
             req.pic.downs++;
         }
 
-        var votes = req.pic.ups + req.pic.downs
-
-        req.pic.sorting = confidenceLevel(req.pic.ups, req.pic.downs)
-        req.pic.confidenceLevel = Math.abs(0.5 - confidenceLevel(req.pic.ups, req.pic.downs)) * (votes / 10)
+        req.pic = fillPicWithSortings(req.pic)
 
         save(req.pic, function(err) {
             assert.equal(err, null);
@@ -139,6 +162,14 @@ db.connect(function(err) {
         console.log('Listening on 80');
     });
 })
+
+function fillPicWithSortings(pic) {
+    var votes = pic.ups + pic.downs
+
+    pic.sorting = confidenceLevel(pic.ups, pic.downs)
+    pic.confidenceLevel = Math.abs(0.5 - confidenceLevel(pic.ups, pic.downs)) * (votes / 10)
+    return pic
+}
 
 function randomWithBias(max) {
     const n = 5
