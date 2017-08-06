@@ -172,7 +172,7 @@ function fillPicWithSortings(pic) {
 }
 
 function randomWithBias(max) {
-    const n = 5
+    const n = 4
     var unif = Math.random()
 
     const oneOver2N = 1 / Math.pow(2, n)
@@ -249,7 +249,7 @@ function getLowestVotedPic(cb) {
         .count()
         .then(length => {
 
-            var random = randomWithBias(length / 2)
+            var random = randomWithBias(length)
 
             collection
                 .find({'sorting' : { $gt: -3}})
