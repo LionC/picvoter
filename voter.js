@@ -249,7 +249,10 @@ function getLowestVotedPic(cb) {
         .count()
         .then(length => {
 
-            var random = randomWithBias(length)
+            var random = randomWithBias(length - 1)
+            if(random > length) {
+                random = length - 1
+            }
 
             collection
                 .find({'sorting' : { $gt: -3}})
