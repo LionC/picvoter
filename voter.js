@@ -268,7 +268,7 @@ function getLowestVotedPic(cb) {
                         return;
                     }
                     var elem = array[0];
-					if (elem && !!elem.confidenceLevel && !!elem.ups && !!elem.downs) {
+					if (elem && elem.confidenceLevel === undefined && elem.ups === undefined && elem.downs === undefined) {
 						cb(err, elem)
 						console.log("serving " + random + "s picture with level " + elem.confidenceLevel + " and votes " + (elem.ups + elem.downs));
 					} else {
