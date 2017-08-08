@@ -271,6 +271,9 @@ function getLowestVotedPic(cb) {
 					if (elem && !!elem.confidenceLevel && !!elem.ups && !!elem.downs) {
 						cb(err, elem)
 						console.log("serving " + random + "s picture with level " + elem.confidenceLevel + " and votes " + (elem.ups + elem.downs));
+					} else {
+					    console.error("invalid picture! ")
+                        console.error(elem)
 					}
                 });
 
@@ -503,7 +506,7 @@ function setUpUsbScanning(imports) {
 
     function checkFile(file, path) {
         if (file.indexOf('bilder-hsaka-2017-') == -1)
-        return
+            return
 
         var dirParts = file.split('-')
         let fullPath = `${path}/${file}`
