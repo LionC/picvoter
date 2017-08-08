@@ -239,6 +239,29 @@ function getStats() {
                 all.stats.votes = all.stats.ups + all.stats.downs
                 return all
             })
+        }).then(stats => {
+            return collection
+                .aggregate([
+                    {
+                        $project: {
+                            votes: { $sum: ["$ups", "$downs"]}
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: "$votes",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ])
+                .toArray()
+                .then(voteCounts => {
+                    stats.votes =voteCounts.reduce((obj, vote) => {
+                        obj[vote._id] = vote.count
+                        return obj
+                    }, {})
+                    return stats
+                })
         })
         .catch(err => console.error(err))
 }
