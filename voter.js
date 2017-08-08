@@ -512,13 +512,13 @@ function setUpUsbScanning(imports) {
         let folderName = moment().format('x')
         let fullName = `${externalDrive}${externalFolder}/import/${author}-${folderName}`
         fs.copy(fullPath, fullName)
-        .then(() => {
-            console.log('copied images')
-            return imports.insertOne({
-                id: `${author}-${folderName}`,
-                author: author
+            .then(() => {
+                console.log(`copied images of ${author}`)
+                return imports.insertOne({
+                    id: `${author}-${folderName}`,
+                    author: author
+                })
             })
-        })
         .catch((err) => {
             console.error(err)
         })
