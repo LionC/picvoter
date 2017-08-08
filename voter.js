@@ -244,7 +244,7 @@ function getStats() {
                 .aggregate([
                     {
                         $project: {
-                            votes: { $sum: ["$ups", "$downs"]}
+                            votes: { $add: ["$ups", "$downs"]}
                         }
                     },
                     {
