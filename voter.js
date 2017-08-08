@@ -250,7 +250,7 @@ function getLowestVotedPic(cb) {
         .then(length => {
 
             var random = randomWithBias(length - 1)
-            if(random > length) {
+            if(random > length - 1) {
                 random = length - 1
             }
 
@@ -274,6 +274,7 @@ function getLowestVotedPic(cb) {
 					} else {
 					    console.error("invalid picture! ")
                         console.error(elem)
+                        getLowestVotedPic(cb)
 					}
                 });
 
