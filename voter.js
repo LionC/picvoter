@@ -13,6 +13,7 @@ var md5File = require('md5-file')
 
 var gaussian = require('gaussian');
 var sharp = require('sharp')
+sharp.concurrency(3)
 
 require('console-stamp')(console, 'HH:MM:ss.l')
 var cors = require('cors')
