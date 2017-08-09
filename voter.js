@@ -135,7 +135,7 @@ db.connect(function(err) {
 
 
     app.get('/hotpics', function(req, res) {
-        getBestPictures(function(err, pics) {
+        getBestPictures(req.query.limit, function(err, pics) {
             res.status(200).json(pics);
         })
     })
@@ -330,8 +330,10 @@ function confidenceLevel(ups, downs) {
 }
 
 
-function getBestPictures(cb) {
-    collection.find({'censured': { $exists: false }}).sort({'sorting': -1}).limit(1000).toArray(function(err, array) {
+function getBestPictures(limit, cb) {
+    limit = limit || 1000
+    limit = parseInt(limit)
+    collection.find({'censured': { $exists: false }}).sort({'sorting': -1}).limit(limit).toArray(function(err, array) {
         cb(err, array);
     })
 }
