@@ -99,6 +99,17 @@ db.connect(function(err) {
             })
     })
 
+    app.put('/:picId', function (req, res) {
+        collection.save(req.body)
+            .then(() => {
+                res.status(200).send()
+            })
+            .catch(error =>{
+                res.status(500).json(error)
+                console.error(error)
+            })
+    })
+
     app.post('/:picId/votes', function(req, res) {
         if(isNaN(req.pic.ups)) {
             req.pic.ups = 0;
@@ -320,7 +331,7 @@ function confidenceLevel(ups, downs) {
 
 
 function getBestPictures(cb) {
-    collection.find().sort({'sorting': -1}).limit(1000).toArray(function(err, array) {
+    collection.find({'censured': { $exists: false }}).sort({'sorting': -1}).limit(1000).toArray(function(err, array) {
         cb(err, array);
     })
 }
