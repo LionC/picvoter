@@ -99,10 +99,23 @@ db.connect(function(err) {
             })
     })
 
-    app.put('/:picId', function (req, res) {
-        collection.save(req.body)
-            .then(() => {
-                res.status(200).send()
+    app.post('/:picId', function (req, res) {
+        var update
+        if(req.body.censured)
+            update = { $set: {censured: req.body.censured}}
+        else
+            update = { $unset: {censured: 1}}
+
+        collection.updateOne({_id: req.params.picId}, update)
+            .then(status => {
+                return collection.findOne({_id: req.params.picId})
+            })
+            .then(pic => {
+                if(pic == null)
+                    res.status(404).send()
+                else
+                    res.status(200).json(pic)
+            
             })
             .catch(error =>{
                 res.status(500).json(error)
