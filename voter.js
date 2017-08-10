@@ -100,6 +100,8 @@ db.connect(function(err) {
     })
 
     app.post('/:picId', function (req, res) {
+
+        console.dir(req.body)
         var update
         if(req.body.censured)
             update = { $set: {censured: req.body.censured}}
